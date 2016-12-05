@@ -1,13 +1,11 @@
 package ledare.com.br.spacefitness.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 
 import ledare.com.br.spacefitness.R;
-import ledare.com.br.spacefitness.fragment.LoginFragment;
 
 public class MainActivity extends BaseActivity{
 
@@ -23,12 +21,8 @@ public class MainActivity extends BaseActivity{
             setupToolbar();
             setupNavigation();
         }else{
-            Fragment loginFragment = LoginFragment.newInstance();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-
-            transaction.replace(R.id.content_main, loginFragment, LOGIN);
-            transaction.commit();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
         }
     }
 

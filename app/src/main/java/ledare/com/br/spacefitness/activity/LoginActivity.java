@@ -1,12 +1,11 @@
-package ledare.com.br.spacefitness.fragment;
+package ledare.com.br.spacefitness.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -19,7 +18,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
@@ -27,45 +25,18 @@ import ledare.com.br.spacefitness.R;
 import ledare.com.br.spacefitness.SpaceApplication;
 import ledare.com.br.spacefitness.model.Aluno;
 
+import static ledare.com.br.spacefitness.activity.MainActivity.USER_LOGIN;
 
-public class LoginFragment extends Fragment {
-
-    private FirebaseAuth mAuth;
+public class LoginActivity extends BaseActivity {
 
     private static final int RC_GOOGLE_SIGN_IN = 1;
     private GoogleApiClient mGoogleApiClient;
 
-    public LoginFragment() {
-        // Required empty public constructor
-    }
-
-    public static LoginFragment newInstance() {
-        LoginFragment fragment = new LoginFragment();
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
-    }
+        setContentView(R.layout.activity_login);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View layout = inflater.inflate(R.layout.fragment_login, container, false);
-        return layout;
-    }
-
-    private void onGoogleLogin(View view) {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
         initGoogleSignIn();
     }
 
@@ -85,14 +56,25 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    private void onGoogleLogin(View view){
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
+    }
+
     private void initGoogleSignIn() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.google_key))
                 .requestEmail()
                 .build();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .enableAutoManage(getActivity(), new GoogleApiClient.OnConnectionFailedListener() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
                         toast("Falha na conexão com o Google");
@@ -104,7 +86,7 @@ public class LoginFragment extends Fragment {
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
+        SpaceApplication.getInstance().getAuth().signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -118,6 +100,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void onAuthSucess(FirebaseUser user) {
+
         Aluno aluno = new Aluno();
         aluno.id = user.getUid();
         aluno.nome = user.getDisplayName();
@@ -129,9 +112,17 @@ public class LoginFragment extends Fragment {
                 .child(user.getUid())
                 .setValue(aluno);
 
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor ed = pref.edit();
+        ed.putBoolean(USER_LOGIN, true).apply();
+
+        finish();
     }
 
     private void toast(String texto){
-        Toast.makeText(getActivity(), texto, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, texto, Toast.LENGTH_SHORT).show();
     }
+
+
+
 }
