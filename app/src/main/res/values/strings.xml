@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Space Fitness</string>
+
+     <!--Credenciais -->
+    <string name="google_key">760575192692-do2bg58kvv3rvj3adv8a3d4smi6e6a0b.apps.googleusercontent.com</string>
+
+    <!-- Navigation Item-->
+    <string name="treino">Treino</string>
+
+    <!-- Navigation Drawer -->
+    <string name="drawer_close">Close</string>
+    <string name="drawer_open">Open</string>
+    <string name="options">Opções</string>
+    <string name="configuracoes">Configurações</string>
+    <string name="sair">Desconectar e Sair</string>
+    <string name="button_login_google">Entrar com o Google</string>
+
+</resources>

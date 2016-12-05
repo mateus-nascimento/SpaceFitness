@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "760575192692",
+    "firebase_url": "https://space-fitness.firebaseio.com",
+    "project_id": "space-fitness",
+    "storage_bucket": "space-fitness.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760575192692:android:0aeb7462890054f4",
+        "android_client_info": {
+          "package_name": "ledare.com.br.spacefitness"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "760575192692-do2bg58kvv3rvj3adv8a3d4smi6e6a0b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZotXyEbet_0FUY0PPpNkq-oUMF-vtfgA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
