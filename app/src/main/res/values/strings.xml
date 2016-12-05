@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Space Fitness</string>
 
-     <!--Credenciais -->
+    <!--Credenciais -->
     <string name="google_key">760575192692-do2bg58kvv3rvj3adv8a3d4smi6e6a0b.apps.googleusercontent.com</string>
 
     <!-- Navigation Item-->
