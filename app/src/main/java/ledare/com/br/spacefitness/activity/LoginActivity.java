@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -42,6 +43,7 @@ public class LoginActivity extends BaseActivity {
         setupToolbar("Bem Vindo");
 
         initGoogleSignIn();
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
         mButtonGoogle = (SignInButton) findViewById(R.id.button_google_sign_in);
         mButtonGoogle.setOnClickListener(

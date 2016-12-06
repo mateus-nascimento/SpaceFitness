@@ -3,6 +3,7 @@
 
     <!--Credenciais -->
     <string name="google_key">760575192692-do2bg58kvv3rvj3adv8a3d4smi6e6a0b.apps.googleusercontent.com</string>
+    <string name="facebook_key">248228945595528</string>
 
     <!-- Navigation Item-->
     <string name="treino">Treino</string>

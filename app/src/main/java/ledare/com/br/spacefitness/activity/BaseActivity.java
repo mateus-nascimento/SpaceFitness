@@ -13,11 +13,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
+
 import ledare.com.br.spacefitness.R;
 import ledare.com.br.spacefitness.SpaceApplication;
+import ledare.com.br.spacefitness.model.Aluno;
 
 import static ledare.com.br.spacefitness.activity.MainActivity.USER_LOGIN;
 
@@ -82,9 +86,16 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void setupHeader(NavigationView navigationView) {
+        FirebaseUser aluno = SpaceApplication.getInstance().getAuth().getCurrentUser();
+
         View headerView = navigationView.getHeaderView(0);
-        TextView mNome = (TextView) headerView.findViewById(R.id.header_nome);
-        mNome.setText("Cremosa");
+        TextView headerNome = (TextView) headerView.findViewById(R.id.header_nome);
+        TextView headerEmail = (TextView) headerView.findViewById(R.id.header_email);
+        ImageView headerImagem = (ImageView) headerView.findViewById(R.id.header_imagem);
+
+        headerNome.setText(aluno.getDisplayName());
+        headerEmail.setText(aluno.getEmail());
+
     }
 
     private void onNavigationSelected(MenuItem menuItem) {
