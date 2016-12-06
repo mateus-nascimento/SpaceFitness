@@ -1,5 +1,9 @@
 package ledare.com.br.spacefitness.activity;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,16 +17,20 @@ import android.widget.Toast;
 
 import ledare.com.br.spacefitness.R;
 
+import static ledare.com.br.spacefitness.activity.MainActivity.USER_LOGIN;
+
 public class BaseActivity extends AppCompatActivity {
 
-    protected Toolbar toolbar;
-    protected DrawerLayout drawerLayout;
-    protected ActionBarDrawerToggle mDrawerToggle;
+    private Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private ProgressDialog mProgress;
 
-    protected void setupToolbar(){
+    protected void setupToolbar(String titulo){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if(toolbar != null){
             setSupportActionBar(toolbar);
+            getSupportActionBar().setTitle(titulo);
         }
     }
 
@@ -37,7 +45,6 @@ public class BaseActivity extends AppCompatActivity {
                     new NavigationView.OnNavigationItemSelectedListener() {
                         @Override
                         public boolean onNavigationItemSelected(MenuItem menuItem) {
-//                            menuItem.setChecked(true);
                             drawerLayout.closeDrawers();
                             onNavigationSelected(menuItem);
                             return true;
@@ -84,9 +91,16 @@ public class BaseActivity extends AppCompatActivity {
                 Toast.makeText(this, "Treino", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.navigation_item_sair:
-                Toast.makeText(this, "Treino", Toast.LENGTH_SHORT).show();
-                break;
+                sair();
         }
+    }
+
+    private void sair() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor ed = pref.edit();
+        ed.putBoolean(USER_LOGIN, false).apply();
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
     }
 
     protected void openDrawer(){
@@ -101,17 +115,19 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    protected void enableDrawer(){
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-        mDrawerToggle.setDrawerIndicatorEnabled(true);
-        mDrawerToggle.syncState();
-        getSupportActionBar().setHomeButtonEnabled(true);
+    protected void showProgress(){
+        if (mProgress == null) {
+            mProgress = new ProgressDialog(this);
+            mProgress.setCancelable(false);
+            mProgress.setMessage("Carregando...");
+        }
+        mProgress.show();
     }
 
-    protected void disableDrawer(){
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        mDrawerToggle.setDrawerIndicatorEnabled(false);
-        mDrawerToggle.syncState();
-        getSupportActionBar().setHomeButtonEnabled(false);
+    protected void hideProgress(){
+        if (mProgress != null && mProgress.isShowing()) {
+            mProgress.dismiss();
+        }
     }
+
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import ledare.com.br.spacefitness.R;
+import ledare.com.br.spacefitness.fragment.TreinoFragment;
 
 public class MainActivity extends BaseActivity{
 
@@ -18,17 +19,22 @@ public class MainActivity extends BaseActivity{
         setContentView(R.layout.activity_main);
 
         if(checkUser()){
-            setupToolbar();
+            setupToolbar("Space Fitness");
             setupNavigation();
+            setupFragment();
         }else{
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
     }
 
-    //Arrumar
-    private void setupTreino() {
 
+    private void setupFragment() {
+        TreinoFragment fragment = TreinoFragment.newInstance();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_main, fragment)
+                .commit();
     }
 
     public boolean checkUser() {
@@ -36,9 +42,4 @@ public class MainActivity extends BaseActivity{
         boolean accepted = pref.getBoolean(USER_LOGIN, false);
         return accepted;
     }
-
-//    Usar para salvar o usuario logado
-//        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-//        SharedPreferences.Editor ed = pref.edit();
-//        ed.putBoolean(USER_LOGIN, true).apply();
 }

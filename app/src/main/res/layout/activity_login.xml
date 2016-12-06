@@ -4,18 +4,15 @@
     android:id="@+id/activity_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ledare.com.br.spacefitness.activity.LoginActivity">
+
+    <include layout="@layout/toolbar"/>
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/button_google_sign_in"
-        android:onClick="onGoogleLogin"
+        android:text="@string/button_google_sign_in"
         android:layout_width="280dp"
         android:layout_height="50dp"
-        android:layout_gravity="center"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
