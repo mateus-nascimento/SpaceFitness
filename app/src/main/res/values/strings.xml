@@ -1,12 +1,10 @@
 <resources>
-    <string name="app_name">Space Fitness</string>
+    <string name="app_name">00000000000</string>
+    <!--<string name="app_name">Space Fitness</string>-->
 
     <!--Credenciais -->
     <string name="google_key">760575192692-do2bg58kvv3rvj3adv8a3d4smi6e6a0b.apps.googleusercontent.com</string>
-    <string name="facebook_key">248228945595528</string>
-
-    <!-- Navigation Item-->
-    <string name="treino">Treino</string>
+    <string name="facebook_app_id">248228945595528</string>
 
     <!-- Navigation Drawer -->
     <string name="drawer_close">Close</string>
@@ -16,9 +14,15 @@
     <string name="sair">Desconectar e Sair</string>
     <string name="button_login_google">Entrar com o Google</string>
     <string name="button_google_sign_in">Entrar com o Google</string>
+    <!-- Navigation Item-->
+    <string name="meu_treino">Meu Treino</string>
+    <string name="professor_treino">Treino do Professor</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="activity_login_bem_vindo">Bem Vindo</string>
+
+    <!-- TextViews -->
+    <string name="login_buttons">Selecione uma opção abaixo para entrar.</string>
 
 </resources>

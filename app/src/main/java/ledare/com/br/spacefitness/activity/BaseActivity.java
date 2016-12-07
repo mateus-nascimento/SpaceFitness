@@ -100,8 +100,11 @@ public class BaseActivity extends AppCompatActivity {
 
     private void onNavigationSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()){
-            case R.id.navigation_item_treino:
-                Toast.makeText(this, "Treino", Toast.LENGTH_SHORT).show();
+            case R.id.navigation_item_treino_meu:
+                Toast.makeText(this, "Meu Treino", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.navigation_item_treino_professor:
+                Toast.makeText(this, "Treino do Professor", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.navigation_item_sair:
                 sair();

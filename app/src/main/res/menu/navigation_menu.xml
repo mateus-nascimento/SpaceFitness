@@ -5,9 +5,14 @@
     android:checkableBehavior="single">
 
     <item
-        android:id="@+id/navigation_item_treino"
+        android:id="@+id/navigation_item_treino_meu"
         android:icon="@drawable/ic_haltere"
-        android:title="@string/treino"/>
+        android:title="@string/meu_treino"/>
+
+    <item
+        android:id="@+id/navigation_item_treino_professor"
+        android:icon="@drawable/ic_haltere"
+        android:title="@string/professor_treino"/>
 </group>
 
     <item

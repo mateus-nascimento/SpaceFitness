@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -36,8 +36,6 @@ import ledare.com.br.spacefitness.R;
 import ledare.com.br.spacefitness.SpaceApplication;
 import ledare.com.br.spacefitness.model.Aluno;
 
-import static android.R.attr.handle;
-import static com.facebook.FacebookSdk.sdkInitialize;
 import static ledare.com.br.spacefitness.activity.MainActivity.USER_LOGIN;
 
 public class LoginActivity extends BaseActivity {
@@ -51,6 +49,10 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+
         setContentView(R.layout.activity_login);
 
         setupToolbar("Bem Vindo");
@@ -134,46 +136,35 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void initFacebookLogin(){
-        FacebookSdk.sdkInitialize(getApplicationContext());
 
         mCallbackmanager = CallbackManager.Factory.create();
 
         mButtonFacebook = (LoginButton) findViewById(R.id.button_facebook_login);
-        mButtonFacebook.setPublishPermissions("email", "public_profile");
+        mButtonFacebook.setReadPermissions("email", "public_profile");
 
         mButtonFacebook.registerCallback(mCallbackmanager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                Log.d("FACEBOOK", "onSuccess: " + loginResult);
                 firebaseAuthWithFacebook(loginResult.getAccessToken());
             }
 
             @Override
             public void onCancel() {
-
+                Log.d("FACEBOOK", "onCancel!");
             }
 
             @Override
             public void onError(FacebookException error) {
+                Log.d("FACEBOOK", "onError: ", error);
 
             }
         });
 
-
-        mButtonFacebook.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        onFacebookLogin();
-                    }
-                }
-        );
-    }
-
-    private void onFacebookLogin() {
-
     }
 
     private void firebaseAuthWithFacebook(AccessToken token){
+        showProgress();
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         SpaceApplication.getInstance().getAuth().signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -182,6 +173,7 @@ public class LoginActivity extends BaseActivity {
                         if(task.isSuccessful()){
                             onAuthSucess(task.getResult().getUser());
                         }else{
+                            Log.d("FACEBOOK", "onComplete: " + task.getException());
                             toast("Falha na autênticação do Facebook");
                         }
 
