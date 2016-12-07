@@ -9,11 +9,19 @@
     <include layout="@layout/toolbar"/>
 
     <com.google.android.gms.common.SignInButton
-        android:id="@+id/button_google_sign_in"
+        android:id="@+id/button_google_login"
         android:text="@string/button_google_sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/button_facebook_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp" />
 
 </RelativeLayout>

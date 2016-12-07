@@ -9,7 +9,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -21,12 +28,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import ledare.com.br.spacefitness.R;
 import ledare.com.br.spacefitness.SpaceApplication;
 import ledare.com.br.spacefitness.model.Aluno;
+
+import static android.R.attr.handle;
+import static com.facebook.FacebookSdk.sdkInitialize;
 import static ledare.com.br.spacefitness.activity.MainActivity.USER_LOGIN;
 
 public class LoginActivity extends BaseActivity {
@@ -34,6 +45,8 @@ public class LoginActivity extends BaseActivity {
     private SignInButton mButtonGoogle;
     private static final int RC_GOOGLE_SIGN_IN = 1;
     private GoogleApiClient mGoogleApiClient;
+    private LoginButton mButtonFacebook;
+    private CallbackManager mCallbackmanager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,18 +55,9 @@ public class LoginActivity extends BaseActivity {
 
         setupToolbar("Bem Vindo");
 
-        initGoogleSignIn();
-        FacebookSdk.sdkInitialize(getApplicationContext());
+        initGoogleLogin();
 
-        mButtonGoogle = (SignInButton) findViewById(R.id.button_google_sign_in);
-        mButtonGoogle.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        onGoogleLogin();
-                    }
-                }
-        );
+        initFacebookLogin();
     }
 
     @Override
@@ -81,12 +85,18 @@ public class LoginActivity extends BaseActivity {
         finish();
     }
 
-    private void onGoogleLogin(){
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
-    }
+    private void initGoogleLogin() {
 
-    private void initGoogleSignIn() {
+        mButtonGoogle = (SignInButton) findViewById(R.id.button_google_login);
+        mButtonGoogle.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onGoogleLogin();
+                    }
+                }
+        );
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.google_key))
                 .requestEmail()
@@ -103,6 +113,11 @@ public class LoginActivity extends BaseActivity {
                 .build();
     }
 
+    private void onGoogleLogin(){
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
+    }
+
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         SpaceApplication.getInstance().getAuth().signInWithCredential(credential)
@@ -114,6 +129,62 @@ public class LoginActivity extends BaseActivity {
                         }else{
                             toast("Falha na autenticação com o Google");
                         }
+                    }
+                });
+    }
+
+    private void initFacebookLogin(){
+        FacebookSdk.sdkInitialize(getApplicationContext());
+
+        mCallbackmanager = CallbackManager.Factory.create();
+
+        mButtonFacebook = (LoginButton) findViewById(R.id.button_facebook_login);
+        mButtonFacebook.setPublishPermissions("email", "public_profile");
+
+        mButtonFacebook.registerCallback(mCallbackmanager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                firebaseAuthWithFacebook(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        });
+
+
+        mButtonFacebook.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onFacebookLogin();
+                    }
+                }
+        );
+    }
+
+    private void onFacebookLogin() {
+
+    }
+
+    private void firebaseAuthWithFacebook(AccessToken token){
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        SpaceApplication.getInstance().getAuth().signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            onAuthSucess(task.getResult().getUser());
+                        }else{
+                            toast("Falha na autênticação do Facebook");
+                        }
+
                     }
                 });
     }
