@@ -14,7 +14,10 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.internal.CallbackManagerImpl;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -45,13 +48,13 @@ public class LoginActivity extends BaseActivity {
     private GoogleApiClient mGoogleApiClient;
     private LoginButton mButtonFacebook;
     private CallbackManager mCallbackmanager;
+    private ProfileTracker mProfileTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
 
         setContentView(R.layout.activity_login);
 
@@ -66,8 +69,6 @@ public class LoginActivity extends BaseActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_GOOGLE_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
@@ -77,6 +78,12 @@ public class LoginActivity extends BaseActivity {
                 firebaseAuthWithGoogle(account);
             }else{
                 toast("Falha no login com o Google");
+            }
+        }
+
+        if (FacebookSdk.isFacebookRequestCode(requestCode)) {
+            if (requestCode == CallbackManagerImpl.RequestCodeOffset.Login.toRequestCode()) {
+                mCallbackmanager.onActivityResult(requestCode, resultCode, data);
             }
         }
     }
@@ -140,27 +147,24 @@ public class LoginActivity extends BaseActivity {
         mCallbackmanager = CallbackManager.Factory.create();
 
         mButtonFacebook = (LoginButton) findViewById(R.id.button_facebook_login);
+
         mButtonFacebook.setReadPermissions("email", "public_profile");
 
         mButtonFacebook.registerCallback(mCallbackmanager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.d("FACEBOOK", "onSuccess: " + loginResult);
                 firebaseAuthWithFacebook(loginResult.getAccessToken());
             }
 
             @Override
             public void onCancel() {
-                Log.d("FACEBOOK", "onCancel!");
             }
 
             @Override
             public void onError(FacebookException error) {
-                Log.d("FACEBOOK", "onError: ", error);
-
+                Log.d("FACEBOOK", "onError!", error);
             }
         });
-
     }
 
     private void firebaseAuthWithFacebook(AccessToken token){
@@ -173,8 +177,9 @@ public class LoginActivity extends BaseActivity {
                         if(task.isSuccessful()){
                             onAuthSucess(task.getResult().getUser());
                         }else{
-                            Log.d("FACEBOOK", "onComplete: " + task.getException());
-                            toast("Falha na autênticação do Facebook");
+                            Log.d("FACEBOOK", "firebaseAuthWithFacebook!");
+                            hideProgress();
+                            toast("Falha na autenticação do Facebook");
                         }
 
                     }
@@ -207,7 +212,5 @@ public class LoginActivity extends BaseActivity {
     private void toast(String texto){
         Toast.makeText(this, texto, Toast.LENGTH_SHORT).show();
     }
-
-
 
 }
