@@ -7,7 +7,6 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.Space;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,7 +20,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 import ledare.com.br.spacefitness.R;
 import ledare.com.br.spacefitness.SpaceApplication;
-import ledare.com.br.spacefitness.model.Aluno;
 
 import static ledare.com.br.spacefitness.activity.MainActivity.USER_LOGIN;
 
@@ -107,11 +105,11 @@ public class BaseActivity extends AppCompatActivity {
                 Toast.makeText(this, "Treino do Professor", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.navigation_item_sair:
-                sair();
+                logout();
         }
     }
 
-    private void sair() {
+    private void logout() {
         SpaceApplication.getInstance().getAuth().signOut();
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor ed = pref.edit();

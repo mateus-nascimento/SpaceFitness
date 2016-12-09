@@ -2,6 +2,7 @@ package ledare.com.br.spacefitness.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -48,7 +49,6 @@ public class LoginActivity extends BaseActivity {
     private GoogleApiClient mGoogleApiClient;
     private LoginButton mButtonFacebook;
     private CallbackManager mCallbackmanager;
-    private ProfileTracker mProfileTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +63,9 @@ public class LoginActivity extends BaseActivity {
         initGoogleLogin();
 
         initFacebookLogin();
+
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+
     }
 
     @Override
