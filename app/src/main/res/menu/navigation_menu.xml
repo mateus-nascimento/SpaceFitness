@@ -22,7 +22,7 @@
 
             <item
                 android:id="@+id/navigation_item_sair"
-                android:icon="@drawable/ic_sair"
+                android:icon="@drawable/ic_sair_black"
                 android:title="@string/sair"/>
 
         </menu>

@@ -11,6 +11,10 @@ import ledare.com.br.spacefitness.R;
 
 public class TreinoAlunoFragment extends Fragment {
 
+    public static TreinoAlunoFragment newInstance() {
+        TreinoAlunoFragment fragment = new TreinoAlunoFragment();
+        return fragment;
+    }
 
     public TreinoAlunoFragment() {
         // Required empty public constructor
@@ -22,4 +26,5 @@ public class TreinoAlunoFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_treino_aluno, container, false);
     }
+
 }

@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,7 +23,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import ledare.com.br.spacefitness.R;
 import ledare.com.br.spacefitness.SpaceApplication;
+import ledare.com.br.spacefitness.fragment.TreinoAlunoFragment;
 
+import static android.R.attr.fragment;
 import static ledare.com.br.spacefitness.activity.MainActivity.USER_LOGIN;
 
 public class BaseActivity extends AppCompatActivity {
@@ -99,7 +104,8 @@ public class BaseActivity extends AppCompatActivity {
     private void onNavigationSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()){
             case R.id.navigation_item_treino_meu:
-                Toast.makeText(this, "Meu Treino", Toast.LENGTH_SHORT).show();
+                TreinoAlunoFragment fragment = new TreinoAlunoFragment().newInstance();
+                startFragment(fragment);
                 break;
             case R.id.navigation_item_treino_professor:
                 Toast.makeText(this, "Treino do Professor", Toast.LENGTH_SHORT).show();
@@ -107,6 +113,13 @@ public class BaseActivity extends AppCompatActivity {
             case R.id.navigation_item_sair:
                 logout();
         }
+    }
+
+    private int startFragment(Fragment fragment){
+        return getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_main, fragment, "FRAGMENT")
+                .commit();
     }
 
     private void logout() {

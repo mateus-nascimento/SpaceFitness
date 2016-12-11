@@ -10,7 +10,6 @@ import ledare.com.br.spacefitness.fragment.InicialFragment;
 
 public class MainActivity extends BaseActivity{
 
-    public static final String LOGIN = "LOGIN";
     public static final String USER_LOGIN = "USER_LOGIN";
 
     @Override
@@ -21,19 +20,10 @@ public class MainActivity extends BaseActivity{
         if(checkUser()){
             setupToolbar("Space Fitness");
             setupNavigation();
-            setupFragment();
         }else{
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
-    }
-
-    private void setupFragment() {
-        InicialFragment fragment = InicialFragment.newInstance();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.content_main, fragment)
-                .commit();
     }
 
     public boolean checkUser() {
