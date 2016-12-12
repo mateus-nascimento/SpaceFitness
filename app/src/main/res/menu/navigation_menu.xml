@@ -7,7 +7,7 @@
     <item
         android:id="@+id/navigation_item_treino_meu"
         android:icon="@drawable/ic_haltere"
-        android:title="@string/meu_treino"/>
+        android:title="@string/minha_evolucao"/>
 
     <item
         android:id="@+id/navigation_item_treino_professor"

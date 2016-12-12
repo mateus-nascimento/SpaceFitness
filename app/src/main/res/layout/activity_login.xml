@@ -6,38 +6,37 @@
     android:layout_height="match_parent"
     tools:context="ledare.com.br.spacefitness.activity.LoginActivity">
 
-    <include layout="@layout/toolbar"/>
+    <include layout="@layout/toolbar"
+        android:id="@+id/toolbar"/>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/login_buttons"
-        android:text="@string/login_buttons"/>
-
-    <LinearLayout
         android:id="@+id/login_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true">
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true"
+        android:text="@string/login_buttons"
+        android:paddingTop="40dp"/>
 
-        <com.google.android.gms.common.SignInButton
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login_buttons"
+        android:paddingTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/button_facebook_login"
+            android:layout_width="200dp"
+            android:layout_height="60dp"/>
+
+
+        <ImageButton
             android:id="@+id/button_google_login"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-            <com.facebook.login.widget.LoginButton
-                android:id="@+id/button_facebook_login"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1"/>
-
-
-
-
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"/>
 
     </LinearLayout>
 

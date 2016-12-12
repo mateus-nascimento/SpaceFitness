@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -19,6 +20,7 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.internal.CallbackManagerImpl;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -36,6 +38,8 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.Arrays;
+
 import ledare.com.br.spacefitness.R;
 import ledare.com.br.spacefitness.SpaceApplication;
 import ledare.com.br.spacefitness.model.Aluno;
@@ -44,10 +48,10 @@ import static ledare.com.br.spacefitness.activity.MainActivity.USER_LOGIN;
 
 public class LoginActivity extends BaseActivity {
 
-    private SignInButton mButtonGoogle;
+    private ImageButton mButtonGoogle;
     private static final int RC_GOOGLE_SIGN_IN = 1;
     private GoogleApiClient mGoogleApiClient;
-    private LoginButton mButtonFacebook;
+    private ImageButton mButtonFacebook;
     private CallbackManager mCallbackmanager;
 
     @Override
@@ -60,9 +64,8 @@ public class LoginActivity extends BaseActivity {
 
         setupToolbar("Bem Vindo");
 
-        initGoogleLogin();
-
         initFacebookLogin();
+        initGoogleLogin();
 
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
@@ -84,10 +87,14 @@ public class LoginActivity extends BaseActivity {
             }
         }
 
-        if (FacebookSdk.isFacebookRequestCode(requestCode)) {
-            if (requestCode == CallbackManagerImpl.RequestCodeOffset.Login.toRequestCode()) {
-                mCallbackmanager.onActivityResult(requestCode, resultCode, data);
-            }
+//        if (FacebookSdk.isFacebookRequestCode(requestCode)) {
+//            if (requestCode == CallbackManagerImpl.RequestCodeOffset.Login.toRequestCode()) {
+//                mCallbackmanager.onActivityResult(requestCode, resultCode, data);
+//            }
+//        }
+
+        if(mCallbackmanager.onActivityResult(requestCode, resultCode, data)) {
+            return;
         }
     }
 
@@ -97,9 +104,64 @@ public class LoginActivity extends BaseActivity {
         finish();
     }
 
+    private void initFacebookLogin(){
+
+        mCallbackmanager = CallbackManager.Factory.create();
+
+        LoginManager.getInstance().registerCallback(mCallbackmanager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                firebaseAuthWithFacebook(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d("FACEBOOK", "onSuccess!");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.d("FACEBOOK", "onError!", error);
+            }
+        });
+
+        mButtonFacebook = (ImageButton) findViewById(R.id.button_facebook_login);
+        mButtonFacebook.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this,
+                                Arrays.asList("email", "public_profile"));
+
+                    }
+                }
+        );
+    }
+
+    private void firebaseAuthWithFacebook(AccessToken token){
+        showProgress();
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        SpaceApplication.getInstance().getAuth().signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            onAuthSucess(task.getResult().getUser());
+                        }else{
+                            Log.d("FACEBOOK", "firebaseAuthWithFacebook!");
+                            hideProgress();
+                            toast("Falha na autenticação do Facebook");
+                        }
+
+                    }
+                });
+    }
+
     private void initGoogleLogin() {
 
-        mButtonGoogle = (SignInButton) findViewById(R.id.button_google_login);
+
+
+        mButtonGoogle = (ImageButton) findViewById(R.id.button_google_login);
         mButtonGoogle.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -141,50 +203,6 @@ public class LoginActivity extends BaseActivity {
                         }else{
                             toast("Falha na autenticação com o Google");
                         }
-                    }
-                });
-    }
-
-    private void initFacebookLogin(){
-
-        mCallbackmanager = CallbackManager.Factory.create();
-
-        mButtonFacebook = (LoginButton) findViewById(R.id.button_facebook_login);
-
-        mButtonFacebook.setReadPermissions("email", "public_profile");
-
-        mButtonFacebook.registerCallback(mCallbackmanager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                firebaseAuthWithFacebook(loginResult.getAccessToken());
-            }
-
-            @Override
-            public void onCancel() {
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.d("FACEBOOK", "onError!", error);
-            }
-        });
-    }
-
-    private void firebaseAuthWithFacebook(AccessToken token){
-        showProgress();
-        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        SpaceApplication.getInstance().getAuth().signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            onAuthSucess(task.getResult().getUser());
-                        }else{
-                            Log.d("FACEBOOK", "firebaseAuthWithFacebook!");
-                            hideProgress();
-                            toast("Falha na autenticação do Facebook");
-                        }
-
                     }
                 });
     }

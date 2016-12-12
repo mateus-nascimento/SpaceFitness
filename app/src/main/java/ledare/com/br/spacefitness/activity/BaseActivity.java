@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,9 +21,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 import ledare.com.br.spacefitness.R;
 import ledare.com.br.spacefitness.SpaceApplication;
-import ledare.com.br.spacefitness.fragment.TreinoAlunoFragment;
+import ledare.com.br.spacefitness.fragment.EvolucaoFragment;
 
-import static android.R.attr.fragment;
 import static ledare.com.br.spacefitness.activity.MainActivity.USER_LOGIN;
 
 public class BaseActivity extends AppCompatActivity {
@@ -104,7 +101,7 @@ public class BaseActivity extends AppCompatActivity {
     private void onNavigationSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()){
             case R.id.navigation_item_treino_meu:
-                TreinoAlunoFragment fragment = new TreinoAlunoFragment().newInstance();
+                EvolucaoFragment fragment = new EvolucaoFragment().newInstance();
                 startFragment(fragment);
                 break;
             case R.id.navigation_item_treino_professor:
